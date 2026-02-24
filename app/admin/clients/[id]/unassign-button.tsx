@@ -41,7 +41,7 @@ export function UnassignButton({
       disabled={loading}
       className="text-sm font-medium text-zinc-500 hover:text-red-600 dark:text-zinc-400 dark:hover:text-red-400"
     >
-      {loading ? "…" : "Remove"}
+      {loading ? "…" : "Remove from program"}
     </button>
   );
 }

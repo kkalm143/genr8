@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
+import { DeleteExerciseButton } from "./delete-exercise-button";
 
 export default async function AdminExercisesPage() {
   const exercises = await prisma.exercise.findMany({
@@ -36,12 +37,15 @@ export default async function AdminExercisesPage() {
               {e.description && (
                 <span className="text-sm text-zinc-500 dark:text-zinc-400 truncate max-w-xs">{e.description}</span>
               )}
-              <Link
-                href={`/admin/exercises/${e.id}/edit`}
-                className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-              >
-                Edit
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link
+                  href={`/admin/exercises/${e.id}/edit`}
+                  className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                >
+                  Edit
+                </Link>
+                <DeleteExerciseButton exerciseId={e.id} exerciseName={e.name} />
+              </div>
             </li>
           ))}
         </ul>

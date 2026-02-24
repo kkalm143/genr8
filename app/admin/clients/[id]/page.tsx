@@ -2,10 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { Role } from "@prisma/client";
+import { AddTaskForm } from "./add-task-form";
 import { ArchiveButton } from "./archive-button";
 import { AssignProgramForm } from "./assign-program-form";
 import { ConsultationFileSection } from "./consultation-file-section";
 import { DeleteDNAResultButton } from "./delete-dna-result-button";
+import { SendMessageForm } from "./send-message-form";
 import { UnassignButton } from "./unassign-button";
 
 export default async function ClientDetailPage({
