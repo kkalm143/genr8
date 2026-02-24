@@ -29,9 +29,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // NextAuth v5 uses different cookie names for HTTP vs HTTPS (__Secure- prefix).
+  // Without this, middleware looks for the wrong cookie on Vercel (HTTPS) and session is never found.
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
+    secureCookie: request.nextUrl.protocol === "https:",
   });
 
   const isLoggedIn = !!token;

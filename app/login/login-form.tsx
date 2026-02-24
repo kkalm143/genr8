@@ -13,6 +13,8 @@ export function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const debug = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debug") === "1";
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -23,6 +25,10 @@ export function LoginForm() {
         password,
         redirect: false,
       });
+      if (debug && typeof window !== "undefined") {
+        // eslint-disable-next-line no-console
+        console.log("[Login debug] signIn result:", { ok: res?.ok, error: res?.error, status: res?.status, url: res?.url });
+      }
       if (res?.error) {
         setError("Invalid email or password.");
         setLoading(false);
@@ -30,7 +36,11 @@ export function LoginForm() {
       }
       router.push(callbackUrl);
       router.refresh();
-    } catch {
+    } catch (err) {
+      if (debug && typeof window !== "undefined") {
+        // eslint-disable-next-line no-console
+        console.error("[Login debug] signIn threw:", err);
+      }
       setError("Something went wrong.");
     }
     setLoading(false);
