@@ -43,6 +43,7 @@ describe("POST /api/admin/programs/[id]/sections/[sectionId]/clone", () => {
 
   it("returns 404 when section not found", async () => {
     vi.mocked(auth).mockResolvedValue({ user: { id: "a1", role: "admin" } } as any);
+    vi.mocked(prisma.workoutSection.findFirst).mockReset();
     vi.mocked(prisma.workoutSection.findFirst).mockResolvedValue(null);
     const res = await POST(new Request("http://localhost", { method: "POST" }), ctx);
     expect(res.status).toBe(404);

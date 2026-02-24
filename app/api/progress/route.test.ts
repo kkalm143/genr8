@@ -74,6 +74,16 @@ describe("POST /api/progress", () => {
 
   it("returns 200 with entry when success", async () => {
     vi.mocked(auth).mockResolvedValue({ user: { id: "u1", role: "client" } } as any);
+    vi.mocked(prisma.progressEntry.create).mockResolvedValue({
+      id: "pe1",
+      content: "My note",
+      type: "note",
+      userId: "u1",
+      programAssignmentId: null,
+      value: null,
+      loggedAt: null,
+      createdAt: new Date(),
+    } as any);
     const res = await POST(
       new Request("http://localhost/api/progress", {
         method: "POST",

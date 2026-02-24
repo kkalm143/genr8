@@ -42,6 +42,8 @@ Science-based fitness and training, powered by your genetics.
 - `npm run dev` – start dev server
 - `npm run build` – build for production
 - `npm run start` – start production server
+- `npm run test` – run tests
+- `npm run test:coverage` – run tests with coverage
 - `npm run db:generate` – generate Prisma client
 - `npm run db:migrate` – run migrations
 - `npm run db:seed` – seed first admin user
