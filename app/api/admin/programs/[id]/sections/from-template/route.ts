@@ -31,7 +31,7 @@ export async function POST(
         name: template.name,
         displayOrder: (maxOrder?.displayOrder ?? -1) + 1,
         durationSeconds: template.defaultDuration,
-        metadata: template.metadata as object | null,
+        metadata: template.metadata ?? undefined,
       },
     });
     return NextResponse.json(section);

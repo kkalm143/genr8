@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin, apiError } from "@/lib/api-helpers";
 import { prisma } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 
 export async function POST(
   _request: Request,
@@ -39,7 +40,7 @@ export async function POST(
           name: sec.name,
           displayOrder: sec.displayOrder,
           durationSeconds: sec.durationSeconds,
-          metadata: sec.metadata as object | null,
+          metadata: sec.metadata == null ? Prisma.JsonNull : (sec.metadata as Prisma.InputJsonValue),
         },
       });
       for (let i = 0; i < sec.sets.length; i++) {

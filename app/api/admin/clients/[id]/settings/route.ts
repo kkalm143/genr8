@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin, apiError } from "@/lib/api-helpers";
 import { prisma } from "@/lib/db";
-import { Role } from "@prisma/client";
+import { Prisma, Role } from "@prisma/client";
 
 export async function GET(
   _request: Request,
@@ -24,7 +24,6 @@ export async function GET(
     allowRearrange: false,
     replaceExercise: false,
     allowCreateWorkouts: false,
-    pinnedMetrics: null as string[] | null,
   };
   if (!settings) {
     const created = await prisma.clientSettings.create({
@@ -66,14 +65,14 @@ export async function PATCH(
       allowRearrange?: boolean;
       replaceExercise?: boolean;
       allowCreateWorkouts?: boolean;
-      pinnedMetrics?: string[] | null;
+      pinnedMetrics?: string[] | typeof Prisma.JsonNull;
     } = {};
     if (typeof workoutComments === "boolean") data.workoutComments = workoutComments;
     if (typeof workoutVisibility === "boolean") data.workoutVisibility = workoutVisibility;
     if (typeof allowRearrange === "boolean") data.allowRearrange = allowRearrange;
     if (typeof replaceExercise === "boolean") data.replaceExercise = replaceExercise;
     if (typeof allowCreateWorkouts === "boolean") data.allowCreateWorkouts = allowCreateWorkouts;
-    if (pinnedMetrics !== undefined) data.pinnedMetrics = Array.isArray(pinnedMetrics) ? pinnedMetrics : null;
+    if (pinnedMetrics !== undefined) data.pinnedMetrics = Array.isArray(pinnedMetrics) ? pinnedMetrics : Prisma.JsonNull;
     const settings = await prisma.clientSettings.upsert({
       where: { clientProfileId: client.clientProfile.id },
       create: {

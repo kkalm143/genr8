@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin, apiError } from "@/lib/api-helpers";
 import { prisma } from "@/lib/db";
 import { hash } from "bcrypt";
-import { Role } from "@prisma/client";
+import { Prisma, Role } from "@prisma/client";
 
 export async function GET(request: Request) {
   const session = await requireAdmin();
@@ -12,14 +12,14 @@ export async function GET(request: Request) {
   const search = searchParams.get("search")?.trim();
   const groupId = searchParams.get("groupId")?.trim() || undefined;
 
-  const where: Parameters<typeof prisma.user.findMany>[0]["where"] = {
+  const where: Prisma.UserWhereInput = {
     role: Role.client,
     archivedAt: archived === "true" ? { not: null } : null,
   };
   if (search) {
     where.OR = [
-      { name: { contains: search, mode: "insensitive" } },
-      { email: { contains: search, mode: "insensitive" } },
+      { name: { contains: search, mode: "insensitive" as const } },
+      { email: { contains: search, mode: "insensitive" as const } },
     ];
   }
   if (groupId) {

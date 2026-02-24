@@ -34,7 +34,7 @@ export default async function TodayPage() {
     ]);
     assignmentCount = a;
     resultsCount = r;
-    nextAssignment = n;
+    nextAssignment = n as { program: { id: string; name: string } } | null;
     tasksDueToday = t;
   }
 
