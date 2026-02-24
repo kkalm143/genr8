@@ -68,7 +68,6 @@ export async function POST(request: Request) {
     });
     return NextResponse.json(entry);
   } catch (e) {
-    console.error("Create progress entry error:", e);
-    return apiError("Failed to save progress.", 500);
+    return apiError("Failed to save progress.", 500, e);
   }
 }

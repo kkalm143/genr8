@@ -105,7 +105,6 @@ export async function POST(request: Request) {
     }
     return NextResponse.json({ created, errors });
   } catch (e) {
-    console.error("CSV import error:", e);
-    return apiError("Failed to import CSV.", 500);
+    return apiError("Failed to import CSV.", 500, e);
   }
 }

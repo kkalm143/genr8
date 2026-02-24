@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import type { Role } from "@prisma/client";
+import { logger } from "@/lib/logger";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -11,8 +12,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
-        if (!process.env.DATABASE_URL) return null;
+        const email = credentials?.email ? String(credentials.email) : undefined;
+        if (!credentials?.email || !credentials?.password) {
+          logger.info("Login failed", { event: "login_failed", email, reason: "missing_credentials" });
+          return null;
+        }
+        if (!process.env.DATABASE_URL) {
+          logger.error("Login failed: DATABASE_URL not set", { event: "login_failed", email });
+          return null;
+        }
         const [{ compare }, { prisma }] = await Promise.all([
           import("bcrypt").then((m) => ({ compare: m.compare })),
           import("@/lib/db"),
@@ -20,9 +28,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const user = await prisma.user.findUnique({
           where: { email: String(credentials.email) },
         });
-        if (!user) return null;
+        if (!user) {
+          logger.info("Login failed", { event: "login_failed", email, reason: "user_not_found" });
+          return null;
+        }
         const ok = await compare(String(credentials.password), user.passwordHash);
-        if (!ok) return null;
+        if (!ok) {
+          logger.info("Login failed", { event: "login_failed", email, reason: "invalid_password" });
+          return null;
+        }
+        logger.info("Login success", {
+          event: "login_success",
+          userId: user.id,
+          email: user.email,
+          role: user.role,
+        });
         return {
           id: user.id,
           email: user.email,
